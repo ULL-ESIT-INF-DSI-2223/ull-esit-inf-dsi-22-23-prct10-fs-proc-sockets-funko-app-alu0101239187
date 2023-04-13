@@ -1,6 +1,10 @@
 import { EventEmitter } from "events";
 
 export class MessageEventEmitterClient extends EventEmitter {
+  /**
+   * Constructor of the class MessageEventEmitterClient. Emits a *message* event when it catches a whole message from the server.
+   * @param connection Connection to the server
+   */
   constructor(connection: EventEmitter) {
     super();
 

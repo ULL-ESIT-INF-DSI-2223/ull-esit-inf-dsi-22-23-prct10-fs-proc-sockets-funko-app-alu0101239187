@@ -1,12 +1,11 @@
 import net from "net";
 import fs from "fs";
-import { FunkoTypes } from "./enums/funko_types.js";
-import { FunkoGenres } from "./enums/funko_genres.js";
 import { Funko } from "./classes/funko.js";
 import { ResponseType } from "./types/response-type.js";
 
 net
   .createServer({ allowHalfOpen: true }, (connection) => {
+    // Gets messages from the client
     let whole_data = "";
     connection.on("data", (data_chunk) => {
       whole_data += data_chunk;
@@ -19,10 +18,13 @@ net
         messageLimit = whole_data.indexOf("\n");
       }
       connection.emit("request", JSON.parse(message));
+      whole_data = "";
     });
 
+    // Process messages from the client
     connection.on("request", (message) => {
       console.log("Cliente conectado");
+
       if (message.type === "add") {
         fs.readFile(
           `funko_collections/${message.user}/${message.funko._id}.json`,
@@ -199,7 +201,7 @@ net
                   const response: ResponseType = {
                     type: "read",
                     success: true,
-                    funkos: [funkoFromJSON(JSON.parse(data.toString()))],
+                    funkos: [Funko.funkoFromJSON(JSON.parse(data.toString()))],
                   };
                   connection.write(JSON.stringify(response) + "\n");
                   connection.end();
@@ -220,29 +222,45 @@ net
               connection.write(JSON.stringify(response) + "\n");
               connection.end();
             } else {
-              const funkos: Funko[] = [];
-              for (const file of files) {
+              files.forEach((file, index) => {
                 fs.readFile(
                   `funko_collections/${message.user}/${file}`,
                   (_, data) => {
-                    funkos.push(funkoFromJSON(JSON.parse(data.toString())));
+                    connection.emit(
+                      "read_funko",
+                      Funko.funkoFromJSON(JSON.parse(data.toString()))
+                    );
+                    if (index === files.length - 1) {
+                      connection.emit("send_funkos");
+                    }
                   }
                 );
-              }
-              const response: ResponseType = {
-                type: "read",
-                success: true,
-                funkos: funkos,
-              };
-              console.log(response.funkos);
-              connection.write(JSON.stringify(response) + "\n");
-              connection.end();
+              });
             }
           }
         );
       }
     });
 
+    // Saves a Funko in an array to send them
+    let funkos: Funko[] = [];
+    connection.on("read_funko", (funko) => {
+      funkos.push(funko);
+    });
+
+    // Sends the Funko array to the client
+    connection.on("send_funkos", () => {
+      const response: ResponseType = {
+        type: "list",
+        success: true,
+        funkos: funkos,
+      };
+      connection.write(JSON.stringify(response) + "\n");
+      connection.end();
+      funkos = [];
+    });
+
+    // Shows a message whenever a client disconnects
     connection.on("close", () => {
       console.log("Cliente desconectado");
     });
@@ -250,62 +268,3 @@ net
   .listen(60301, () => {
     console.log("Servidor iniciado");
   });
-
-export function funkoFromJSON(data: any): Funko {
-  let type: FunkoTypes;
-  switch (data._type.toLowerCase()) {
-    case "pop!":
-      type = FunkoTypes.POP;
-      break;
-    case "pop! rides":
-      type = FunkoTypes.POP_RIDES;
-      break;
-    case "vynil soda":
-      type = FunkoTypes.VYNIL_SODA;
-      break;
-    case "vynil gold":
-      type = FunkoTypes.VYNIL_GOLD;
-      break;
-    default:
-      throw new Error(
-        "El tipo del Funko debe ser Pop!, Pop! Rides, Vynil Soda o Vynil Gold"
-      );
-  }
-  let genre: FunkoGenres;
-  switch (data._genre.toLowerCase()) {
-    case "animación":
-      genre = FunkoGenres.ANIMATION;
-      break;
-    case "anime":
-      genre = FunkoGenres.ANIME;
-      break;
-    case "películas y tv":
-      genre = FunkoGenres.MOVIES_AND_TV;
-      break;
-    case "música":
-      genre = FunkoGenres.MUSIC;
-      break;
-    case "deportes":
-      genre = FunkoGenres.SPORTS;
-      break;
-    case "videojuegos":
-      genre = FunkoGenres.VIDEOGAMES;
-      break;
-    default:
-      throw new Error(
-        "El género del Funko debe ser Animación, Anime, Películas y TV, Música, Deportes o Videojuegos"
-      );
-  }
-  return new Funko(
-    data._id,
-    data._name,
-    data._description,
-    type,
-    genre,
-    data._franchise,
-    data._number,
-    data._exclusive,
-    data._characteristics,
-    data._value
-  );
-}

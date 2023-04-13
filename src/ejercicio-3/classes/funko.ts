@@ -196,4 +196,68 @@ export class Funko {
       +params[9]
     );
   }
+
+  /**
+   * Creates a Funko object from a correct JSON object
+   * @param data The JSON object to parse
+   * @returns A new Funko with the atributes of the JSON
+   */
+  public static funkoFromJSON(data: any): Funko {
+    let type: FunkoTypes;
+    switch (data._type.toLowerCase()) {
+      case "pop!":
+        type = FunkoTypes.POP;
+        break;
+      case "pop! rides":
+        type = FunkoTypes.POP_RIDES;
+        break;
+      case "vynil soda":
+        type = FunkoTypes.VYNIL_SODA;
+        break;
+      case "vynil gold":
+        type = FunkoTypes.VYNIL_GOLD;
+        break;
+      default:
+        throw new Error(
+          "El tipo del Funko debe ser Pop!, Pop! Rides, Vynil Soda o Vynil Gold"
+        );
+    }
+    let genre: FunkoGenres;
+    switch (data._genre.toLowerCase()) {
+      case "animación":
+        genre = FunkoGenres.ANIMATION;
+        break;
+      case "anime":
+        genre = FunkoGenres.ANIME;
+        break;
+      case "películas y tv":
+        genre = FunkoGenres.MOVIES_AND_TV;
+        break;
+      case "música":
+        genre = FunkoGenres.MUSIC;
+        break;
+      case "deportes":
+        genre = FunkoGenres.SPORTS;
+        break;
+      case "videojuegos":
+        genre = FunkoGenres.VIDEOGAMES;
+        break;
+      default:
+        throw new Error(
+          "El género del Funko debe ser Animación, Anime, Películas y TV, Música, Deportes o Videojuegos"
+        );
+    }
+    return new Funko(
+      data._id,
+      data._name,
+      data._description,
+      type,
+      genre,
+      data._franchise,
+      data._number,
+      data._exclusive,
+      data._characteristics,
+      data._value
+    );
+  }
 }

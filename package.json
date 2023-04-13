@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "tsc-watch --onSuccess \"node dist/ejercicio-pe103/server.js\"",
+    "start": "tsc-watch --onSuccess \"node dist/ejercicio-3/server.js\"",
     "doc": "typedoc",
     "test": "mocha",
     "coverage": "c8 --check-coverage npm test && c8 report --reporter=lcov"

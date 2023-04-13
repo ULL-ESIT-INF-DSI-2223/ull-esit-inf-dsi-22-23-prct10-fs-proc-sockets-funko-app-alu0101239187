@@ -4,20 +4,14 @@ import { hideBin } from "yargs/helpers";
 import { Funko } from "./classes/funko.js";
 import net from "net";
 import { RequestType } from "./types/request-type.js";
-import { FunkoTypes } from "./enums/funko_types.js";
-import { FunkoGenres } from "./enums/funko_genres.js";
+import { MessageEventEmitterClient } from "./message-event-emitter-client.js";
 
-const client = net.connect({ port: 60301 });
+const socket = net.connect({ port: 60301 });
+const client = new MessageEventEmitterClient(socket);
 let user: string;
 
-let wholeData = "";
-client.on("data", (dataChunk) => {
-  wholeData += dataChunk;
-});
-
-client.on("end", () => {
-  const message = JSON.parse(wholeData);
-
+// Process the messages from the server
+client.on("message", (message) => {
   if (message.type === "add") {
     if (message.success) {
       console.log(chalk.green(`Funko añadido a la colección de ${user}`));
@@ -50,7 +44,7 @@ client.on("end", () => {
     }
   } else if (message.type === "read") {
     if (message.success) {
-      printFunko(funkoFromJSON(message.funkos[0]));
+      printFunko(Funko.funkoFromJSON(message.funkos[0]));
     } else {
       console.log(
         chalk.red(
@@ -61,8 +55,8 @@ client.on("end", () => {
   } else if (message.type === "list") {
     if (message.success) {
       for (let index = 0; index < message.funkos.length; index++) {
-        console.log(index);
-        printFunko(funkoFromJSON(message.funkos[index]));
+        printFunko(Funko.funkoFromJSON(message.funkos[index]));
+        console.log(chalk.white("--------------------------------"));
       }
     } else {
       console.log(
@@ -154,7 +148,7 @@ yargs(hideBin(process.argv))
           user: user,
           funko: Funko.instanceFromParams(params),
         };
-        client.write(JSON.stringify(request) + "\n");
+        socket.write(JSON.stringify(request) + "\n");
       } else {
         const params: string[] = [
           "" + argv.id,
@@ -173,7 +167,7 @@ yargs(hideBin(process.argv))
           user: user,
           funko: Funko.instanceFromParams(params),
         };
-        client.write(JSON.stringify(request) + "\n");
+        socket.write(JSON.stringify(request) + "\n");
       }
     }
   )
@@ -256,7 +250,7 @@ yargs(hideBin(process.argv))
           user: user,
           funko: Funko.instanceFromParams(params),
         };
-        client.write(JSON.stringify(request) + "\n");
+        socket.write(JSON.stringify(request) + "\n");
       } else {
         const params: string[] = [
           "" + argv.id,
@@ -275,7 +269,7 @@ yargs(hideBin(process.argv))
           user: user,
           funko: Funko.instanceFromParams(params),
         };
-        client.write(JSON.stringify(request) + "\n");
+        socket.write(JSON.stringify(request) + "\n");
       }
     }
   )
@@ -301,7 +295,7 @@ yargs(hideBin(process.argv))
         user: user,
         id: argv.id,
       };
-      client.write(JSON.stringify(request) + "\n");
+      socket.write(JSON.stringify(request) + "\n");
     }
   )
   .command(
@@ -326,7 +320,7 @@ yargs(hideBin(process.argv))
         user: user,
         id: argv.id,
       };
-      client.write(JSON.stringify(request) + "\n");
+      socket.write(JSON.stringify(request) + "\n");
     }
   )
   .command(
@@ -345,7 +339,7 @@ yargs(hideBin(process.argv))
         type: "list",
         user: user,
       };
-      client.write(JSON.stringify(request) + "\n");
+      socket.write(JSON.stringify(request) + "\n");
     }
   )
   .help().argv;
@@ -386,63 +380,4 @@ function printFunko(funko: Funko): void {
       chalk.white(`Valor de mercado: `) + chalk.cyan(funko.value.toFixed(2))
     );
   }
-}
-
-function funkoFromJSON(data: any): Funko {
-  let type: FunkoTypes;
-  switch (data._type.toLowerCase()) {
-    case "pop!":
-      type = FunkoTypes.POP;
-      break;
-    case "pop! rides":
-      type = FunkoTypes.POP_RIDES;
-      break;
-    case "vynil soda":
-      type = FunkoTypes.VYNIL_SODA;
-      break;
-    case "vynil gold":
-      type = FunkoTypes.VYNIL_GOLD;
-      break;
-    default:
-      throw new Error(
-        "El tipo del Funko debe ser Pop!, Pop! Rides, Vynil Soda o Vynil Gold"
-      );
-  }
-  let genre: FunkoGenres;
-  switch (data._genre.toLowerCase()) {
-    case "animación":
-      genre = FunkoGenres.ANIMATION;
-      break;
-    case "anime":
-      genre = FunkoGenres.ANIME;
-      break;
-    case "películas y tv":
-      genre = FunkoGenres.MOVIES_AND_TV;
-      break;
-    case "música":
-      genre = FunkoGenres.MUSIC;
-      break;
-    case "deportes":
-      genre = FunkoGenres.SPORTS;
-      break;
-    case "videojuegos":
-      genre = FunkoGenres.VIDEOGAMES;
-      break;
-    default:
-      throw new Error(
-        "El género del Funko debe ser Animación, Anime, Películas y TV, Música, Deportes o Videojuegos"
-      );
-  }
-  return new Funko(
-    data._id,
-    data._name,
-    data._description,
-    type,
-    genre,
-    data._franchise,
-    data._number,
-    data._exclusive,
-    data._characteristics,
-    data._value
-  );
 }
