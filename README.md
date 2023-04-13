@@ -38,6 +38,10 @@ Durante el desarrollo del sistema, se han utilizado las siguientes herramientas:
 
 ## Ejercicios
 
+### Ejercicio 1 - Traza de ejecución
+
+
+
 ## Conclusión
 
 ## Bibliografía

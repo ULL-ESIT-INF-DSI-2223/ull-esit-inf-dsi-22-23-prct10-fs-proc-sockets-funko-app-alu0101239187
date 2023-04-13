@@ -1,8 +1,8 @@
 import "mocha";
 import { expect } from "chai";
-import { Funko } from "../../src/classes/funko.js";
-import { FunkoTypes } from "../../src/enums/funko_types.js";
-import { FunkoGenres } from "../../src/enums/funko_genres.js";
+import { Funko } from "../../../src/ejercicio-3/classes/funko.js";
+import { FunkoTypes } from "../../../src/ejercicio-3/enums/funko_types.js";
+import { FunkoGenres } from "../../../src/ejercicio-3/enums/funko_genres.js";
 
 describe("Funko class tests", () => {
   it("Funko constructor", () => {
@@ -306,7 +306,7 @@ describe("Funko class tests", () => {
     );
   });
 
-  it("Function instanceFromCSVString", () => {
+  it("Function instanceFromParams", () => {
     expect(
       Funko.instanceFromParams([
         "1",

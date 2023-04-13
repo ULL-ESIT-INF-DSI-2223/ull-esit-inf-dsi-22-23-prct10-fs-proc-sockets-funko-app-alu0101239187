@@ -1,0 +1,4 @@
+Resultado del comando:
+
+Hola
+
