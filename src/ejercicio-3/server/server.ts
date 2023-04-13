@@ -1,7 +1,7 @@
 import net from "net";
 import fs from "fs";
-import { Funko } from "./classes/funko.js";
-import { ResponseType } from "./types/response-type.js";
+import { Funko } from "../classes/funko.js";
+import { ResponseType } from "../types/response-type.js";
 
 net
   .createServer({ allowHalfOpen: true }, (connection) => {

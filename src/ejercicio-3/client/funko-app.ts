@@ -1,9 +1,9 @@
 import chalk from "chalk";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { Funko } from "./classes/funko.js";
+import { Funko } from "../classes/funko.js";
 import net from "net";
-import { RequestType } from "./types/request-type.js";
+import { RequestType } from "../types/request-type.js";
 import { MessageEventEmitterClient } from "./message-event-emitter-client.js";
 
 const socket = net.connect({ port: 60301 });
