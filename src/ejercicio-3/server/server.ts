@@ -2,6 +2,20 @@ import net from "net";
 import fs from "fs";
 import { Funko } from "../classes/funko.js";
 import { ResponseType } from "../types/response-type.js";
+import { exit } from "process";
+
+// Creates the collections directory in case it doesn't exists
+// Is synchronous because it must be done before starting the server
+try {
+  fs.accessSync(`funko_collections`);
+} catch (access_error) {
+  try {
+    fs.mkdirSync(`funko_collections`);
+  } catch (mkdir_error) {
+    console.log("Ha ocurrido un error creando la carpeta de las colecciones");
+    exit();
+  }
+}
 
 net
   .createServer({ allowHalfOpen: true }, (connection) => {
@@ -26,7 +40,7 @@ net
       console.log("Cliente conectado");
 
       if (message.type === "add") {
-        fs.readFile(
+        fs.access(
           `funko_collections/${message.user}/${message.funko._id}.json`,
           (error) => {
             if (error) {
@@ -108,7 +122,7 @@ net
             connection.write(JSON.stringify(response) + "\n");
             connection.end();
           } else {
-            fs.readFile(
+            fs.access(
               `funko_collections/${message.user}/${message.funko._id}.json`,
               (error) => {
                 if (error) {
