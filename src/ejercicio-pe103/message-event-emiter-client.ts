@@ -15,9 +15,6 @@ export class MessageEventEmitterClient extends EventEmitter {
         this.emit("message", JSON.parse(message));
         messageLimit = wholeData.indexOf("\n");
       }
-      if (messageLimit === -1) {
-        wholeData = "";
-      }
     });
   }
 }

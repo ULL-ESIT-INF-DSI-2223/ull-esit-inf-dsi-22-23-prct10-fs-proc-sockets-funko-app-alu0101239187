@@ -4,8 +4,10 @@ import { Funko } from "../classes/funko.js";
 import { ResponseType } from "../types/response-type.js";
 import { exit } from "process";
 
-// Creates the collections directory in case it doesn't exists
-// Is synchronous because it must be done before starting the server
+/**
+ * Creates the collections directory in case it doesn't exists
+ * Is synchronous because it must be done before starting the server
+ */
 try {
   fs.accessSync(`funko_collections`);
 } catch (access_error) {
@@ -19,7 +21,9 @@ try {
 
 net
   .createServer({ allowHalfOpen: true }, (connection) => {
-    // Gets messages from the client
+    /**
+     * Gets messages from the client
+     */
     let whole_data = "";
     connection.on("data", (data_chunk) => {
       whole_data += data_chunk;
@@ -32,10 +36,11 @@ net
         messageLimit = whole_data.indexOf("\n");
       }
       connection.emit("request", JSON.parse(message));
-      whole_data = "";
     });
 
-    // Process messages from the client
+    /**
+     * Process messages from the client
+     */
     connection.on("request", (message) => {
       console.log("Cliente conectado");
 
@@ -257,7 +262,7 @@ net
     });
 
     // Saves a Funko in an array to send them
-    let funkos: Funko[] = [];
+    const funkos: Funko[] = [];
     connection.on("read_funko", (funko) => {
       funkos.push(funko);
     });
@@ -271,7 +276,6 @@ net
       };
       connection.write(JSON.stringify(response) + "\n");
       connection.end();
-      funkos = [];
     });
 
     // Shows a message whenever a client disconnects

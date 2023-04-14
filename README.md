@@ -82,12 +82,49 @@ En este punto, la pila de llamadas y la cola de manejadores están vacías y en 
 
 ### Ejercicio 2
 
-En este ejercicio se trata de crear un programa que ejecute el comando `wc` con las opciones requeridas por el usuario y muestre su resultado por consola. Para controlar la entrada de argumentos al programa se utiliza `yargs`, creando dos comandos:
+Este ejercicio se trata de crear un programa que ejecute el comando `wc` con las opciones requeridas por el usuario y muestre su resultado por consola. Para controlar la entrada de argumentos al programa se utiliza `yargs`, creando dos comandos:
 
 - Comando `pipe`: Este comando forma un array de opciones según las que se hayan introducido en `yargs` y ejecuta `wc` con este array, utilizando un pipe para mostrar por consola la salida estándar y la salida de errores.
 - Comando `no-pipe`: Este comando ejecuta el comando `wc` sobre el fichero introducido y muestra por consola una cadena con la salida del comando cuando este termina que varía dependiendo de las opciones que se hayan introducido en `yargs` y el resultado de este.
 
 Para asegurar que las opciones introducidas al comando son válidas, se ha utilizado el método `strict(true)` de `yargs`, haciendo que se muestre la ayuda y el error cuando se encuentre un argumento inválido. En el caso de este ejercicio, no se han realizado pruebas por la intervención de `yargs` y dado que el resultado del código asíncrono es mostrado por la consola únicamente.
+
+### Ejercicio 3 - Cliente y servidor para aplicación de registro de Funko Pops
+
+En este ejercicio se cambia la implementación de la aplicación de registro de Funko Pops desarrollada en la [práctica 9](https://github.com/ULL-ESIT-INF-DSI-2223/ull-esit-inf-dsi-22-23-prct09-funko-app-alu0101239187), separándola en un servidor encargado de la gestión de ficheros y colecciones y un cliente encargado de la interacción con el usuario. En este informe se tratarán los cambios que se han realizado únicamente.
+
+#### Clase Funko
+
+En la clase `Funko` que se utiliza para almacenar los datos de los Funkos se ha agregado una función estática `funkoFromJSON` que permite obtener una instancia de un Funko a partir de un objeto JSON con la información del Funko.
+
+#### Servidor
+
+Como se ha explicado antes, la aplicación se ha divido en cliente y servidor. El lado servidor se encarga de la gestión de ficheros. Para esto, lo primero que hace es comprobar que la carpeta en la que se va a guardar la información exista para evitar fallos y, en caso de que no exista, la crea con el uso de la API síncrona, ya que no se debe iniciar el servidor sin haber creado la carpeta antes porque podrían ocurrir comportamientos no deseados. Con cada conexión, el servidor inicia listeners para varios eventos:
+
+- *data*: Cuando llega información en la conexión la añade a una cadena. Cuando encuentra un salto de línea, interpreta que la información está completa y emite un evento *request* junto a la información obtenida en formato JSON.
+- *request*: Cuando el servidor detecta este evento, revisa el tipo de operación a realizar en el objeto JSON y actúa en consecuencia, realizando la operación deseada por el usuario con la información contenida en el mensaje, es decir, el usuario, el ID y el Funko. Cuando se complete la operación, se le enviará una respuesta al cliente con el resultado de la operación y, en caso de que sea necesario, la información que haya pedido. El funcionamiento de las operaciones es idéntico al de la práctica anterior, adaptándolo a la API asíncrona.
+- *read_funko*: Este evento es un poco distinto al resto. Ya que no se pueden usar promesas, para rellenar el array de Funkos que será devuelto al usuario en la operación listar se debe usar propagación de eventos. Este evento se emite cada vez que se lee un fichero de una colección e incluye el objeto Funko contenido en este fichero. Este listener únicamente agrega el Funko a un array.
+- *send_funkos*: Este evento se emite cuando se ha leído el último fichero de la colección de un usuario y el listener que lo detecta envía un mensaje con el array obtenido al cliente.
+- *close*: Informa de que un cliente se ha desconectado.
+
+Las respuestas del servidor son del tipo `ResponseType`, cuyos atributos son los siguientes:
+
+- `type`: Tipo de operación realizada.
+- `success`: Verdadero si la operación se pudo realizar, falso en caso contrario.
+- `funkos`: Atributo opcional en el que se guardan los Funkos a enviar al cliente en caso de que sea necesario.
+
+#### Cliente
+
+El lado cliente del programa se encarga de la interacción con el usuario. Para comprobar como funciona lo primero que tenemos que revisar es la clase `MessageEventEmitterClient`. Esta clase recibe en el constructor la conexión al servidor y se encarga de recibir todos los eventos *data* con la información que este envíe. De igual manera que en el servidor, cuando encuentra un salto de línea interpreta que la información está completa y emite un evento *message* que el programa se encargará de procesar.
+
+El funcionamiento del cliente es muy sencillo gracias al paquete `yargs`, que se encarga de gestionar los argumentos que le llegan al programa. De forma similar a la práctica anterior, la aplicación recoge los parámetros del comando seleccionado, pero esta vez en lugar de realizar la operación, envía la información al servidor que se encarga de procesarla. Estos mensajes son del tipo `RequestType`, que posee los siguientes atributos:
+
+- `type`: Tipo de operación realizada.
+- `user`: Usuario que ejecutó el comando.
+- `id`: Atributo opcional para el ID del Funko.
+- `funko`: Atributo opcional para el Funko con el que realizar la operación.
+
+Una vez enviado el mensaje y respondido por parte del servidor, el cliente procesa la respuesta gracias al listener del evento *message* que tratamos previamente, que muestra por consola al usuario el resultado de la operación.
 
 ## Conclusión
 
@@ -97,3 +134,4 @@ Para asegurar que las opciones introducidas al comando son válidas, se ha utili
 - [Desarrollo de Sistemas Informáticos - Node.js](https://ull-esit-inf-dsi-2223.github.io/nodejs-theory/)
 - [Node.js fs documentation](https://nodejs.org/docs/latest-v19.x/api/fs.html)
 - [JavaScript Visualized: Event Loop](https://dev.to/lydiahallie/javascript-visualized-event-loop-3dif)
+- [yargs documentation](https://yargs.js.org/docs/)

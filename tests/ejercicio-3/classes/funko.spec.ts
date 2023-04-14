@@ -610,4 +610,225 @@ describe("Funko class tests", () => {
       )
     );
   });
+
+  it("Function funkoFromJSON", () => {
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Sonic","_description": "El Sonic","_type": "Pop!","_genre": "Videojuegos","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 20}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Sonic",
+        "El Sonic",
+        FunkoTypes.POP,
+        FunkoGenres.VIDEOGAMES,
+        "Sonic The Hedgehog",
+        1,
+        true,
+        "",
+        20
+      )
+    );
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Classic Sonic","_description": "El mejor Funko de Sonic","_type": "Pop! Rides","_genre": "Videojuegos","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 50.99}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Classic Sonic",
+        "El mejor Funko de Sonic",
+        FunkoTypes.POP_RIDES,
+        FunkoGenres.VIDEOGAMES,
+        "Sonic The Hedgehog",
+        1,
+        true,
+        "",
+        50.99
+      )
+    );
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Classic Sonic","_description": "El mejor Funko de Sonic","_type": "Vynil Soda","_genre": "Videojuegos","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 50.99}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Classic Sonic",
+        "El mejor Funko de Sonic",
+        FunkoTypes.VYNIL_SODA,
+        FunkoGenres.VIDEOGAMES,
+        "Sonic The Hedgehog",
+        1,
+        true,
+        "",
+        50.99
+      )
+    );
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Classic Sonic","_description": "El mejor Funko de Sonic","_type": "Vynil Gold","_genre": "Videojuegos","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 50.99}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Classic Sonic",
+        "El mejor Funko de Sonic",
+        FunkoTypes.VYNIL_GOLD,
+        FunkoGenres.VIDEOGAMES,
+        "Sonic The Hedgehog",
+        1,
+        true,
+        "",
+        50.99
+      )
+    );
+    expect(() =>
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Sonic","_description": "El Sonic","_type": "Sí","_genre": "Videojuegos","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 20}'
+        )
+      )
+    ).to.throw(
+      "El tipo del Funko debe ser Pop!, Pop! Rides, Vynil Soda o Vynil Gold"
+    );
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Classic Sonic","_description": "El mejor Funko de Sonic","_type": "Pop!","_genre": "Animación","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 50.99}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Classic Sonic",
+        "El mejor Funko de Sonic",
+        FunkoTypes.POP,
+        FunkoGenres.ANIMATION,
+        "Sonic The Hedgehog",
+        1,
+        true,
+        "",
+        50.99
+      )
+    );
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Classic Sonic","_description": "El mejor Funko de Sonic","_type": "Pop!","_genre": "Anime","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 50.99}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Classic Sonic",
+        "El mejor Funko de Sonic",
+        FunkoTypes.POP,
+        FunkoGenres.ANIME,
+        "Sonic The Hedgehog",
+        1,
+        true,
+        "",
+        50.99
+      )
+    );
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Classic Sonic","_description": "El mejor Funko de Sonic","_type": "Pop!","_genre": "Películas y TV","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 50.99}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Classic Sonic",
+        "El mejor Funko de Sonic",
+        FunkoTypes.POP,
+        FunkoGenres.MOVIES_AND_TV,
+        "Sonic The Hedgehog",
+        1,
+        true,
+        "",
+        50.99
+      )
+    );
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Classic Sonic","_description": "El mejor Funko de Sonic","_type": "Pop!","_genre": "Música","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 50.99}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Classic Sonic",
+        "El mejor Funko de Sonic",
+        FunkoTypes.POP,
+        FunkoGenres.MUSIC,
+        "Sonic The Hedgehog",
+        1,
+        true,
+        "",
+        50.99
+      )
+    );
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Classic Sonic","_description": "El mejor Funko de Sonic","_type": "Pop!","_genre": "Deportes","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 50.99}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Classic Sonic",
+        "El mejor Funko de Sonic",
+        FunkoTypes.POP,
+        FunkoGenres.SPORTS,
+        "Sonic The Hedgehog",
+        1,
+        true,
+        "",
+        50.99
+      )
+    );
+    expect(() =>
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Sonic","_description": "El Sonic","_type": "Pop!","_genre": "No","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": true,"_characteristics": "","_value": 20}'
+        )
+      )
+    ).to.throw(
+      "El género del Funko debe ser Animación, Anime, Películas y TV, Música, Deportes o Videojuegos"
+    );
+    expect(
+      Funko.funkoFromJSON(
+        JSON.parse(
+          '{"_id": 1,"_name": "Classic Sonic","_description": "El mejor Funko de Sonic","_type": "Pop!","_genre": "Videojuegos","_franchise": "Sonic The Hedgehog","_number": 1,"_exclusive": false,"_characteristics": "","_value": 50.99}'
+        )
+      )
+    ).to.be.eql(
+      new Funko(
+        1,
+        "Classic Sonic",
+        "El mejor Funko de Sonic",
+        FunkoTypes.POP,
+        FunkoGenres.VIDEOGAMES,
+        "Sonic The Hedgehog",
+        1,
+        false,
+        "",
+        50.99
+      )
+    );
+  });
 });

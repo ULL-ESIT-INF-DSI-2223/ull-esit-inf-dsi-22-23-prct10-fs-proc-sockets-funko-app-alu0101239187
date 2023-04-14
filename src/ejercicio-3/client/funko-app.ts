@@ -10,7 +10,9 @@ const socket = net.connect({ port: 60301 });
 const client = new MessageEventEmitterClient(socket);
 let user: string;
 
-// Process the messages from the server
+/**
+ * Process the messages from the server
+ */
 client.on("message", (message) => {
   if (message.type === "add") {
     if (message.success) {
