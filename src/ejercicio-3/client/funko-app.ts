@@ -342,6 +342,7 @@ yargs(hideBin(process.argv))
       socket.write(JSON.stringify(request) + "\n");
     }
   )
+  .strict(true)
   .help().argv;
 
 /**

@@ -38,7 +38,7 @@ Durante el desarrollo del sistema, se han utilizado las siguientes herramientas:
 
 ## Ejercicios
 
-### Ejercicio 1 - Traza de ejecución
+### Ejercicio 1
 
 En este ejercicio se realizará una traza de ejecución del siguiente código, mostrando el contenido de la pila de llamadas, el registro de eventos de la API y la cola de manejadores en cada momento de su ejecución:
 
@@ -79,6 +79,15 @@ Tras comprobar que el fichero es visible, muestra un mensaje por pantalla indica
 Asumimos que durante la ejecución del programa todo va bien y no sucede ningún error, es decir, se introduce el nombre de un fichero y este es visible y accesible por parte del programa. En este caso, lo primero que pasará es que entrará a la pila de llamadas la función `access`. Al ejecutarse, esta saldrá de la pila de llamadas y el callback resultado de su ejecución pasará a la cola de manejadores, dado que su primera sentencia no necesita esperar. Esto significa que la sentencia `console.log("Starting to watch file ${filename}");` pasará a la pila de llamadas para ejecutarse. Tras su ejecución, pasará a la pila de llamadas la función `watch`, que se ejecutará en segundo plano al tratarse de una función asíncrona. Tras esto, se añadirá a la pila de llamadas la creación del listener sobre `watcher`, que pasará tras crearse y salir de la pila de llamadas al registro de eventos de la API a la espera de que suceda algún evento de tipo *change*. Para terminar con la ejecución inicial, pasará a la pila de llamadas la última sentencia del callback, `console.log("File ${filename} is no longer watched");`, ejecutándose y mostrando el contenido por pantalla. 
 
 En este punto, la pila de llamadas y la cola de manejadores están vacías y en el registro de eventos de la API se encuentra el listener de `watcher`. Cada vez que suceda un cambio en el fichero, `watcher` emitirá uno o dos(presumiblemente por errores en la función) eventos *change*. Estos eventos desencadenarán que el callback del listener pase a la cola de manejadores, tras lo que pasarán en orden de entrada a la pila de llamadas, ejecutándose en orden LIFO.
+
+### Ejercicio 2
+
+En este ejercicio se trata de crear un programa que ejecute el comando `wc` con las opciones requeridas por el usuario y muestre su resultado por consola. Para controlar la entrada de argumentos al programa se utiliza `yargs`, creando dos comandos:
+
+- Comando `pipe`: Este comando forma un array de opciones según las que se hayan introducido en `yargs` y ejecuta `wc` con este array, utilizando un pipe para mostrar por consola la salida estándar y la salida de errores.
+- Comando `no-pipe`: Este comando ejecuta el comando `wc` sobre el fichero introducido y muestra por consola una cadena con la salida del comando cuando este termina que varía dependiendo de las opciones que se hayan introducido en `yargs` y el resultado de este.
+
+Para asegurar que las opciones introducidas al comando son válidas, se ha utilizado el método `strict(true)` de `yargs`, haciendo que se muestre la ayuda y el error cuando se encuentre un argumento inválido. En el caso de este ejercicio, no se han realizado pruebas por la intervención de `yargs` y dado que el resultado del código asíncrono es mostrado por la consola únicamente.
 
 ## Conclusión
 

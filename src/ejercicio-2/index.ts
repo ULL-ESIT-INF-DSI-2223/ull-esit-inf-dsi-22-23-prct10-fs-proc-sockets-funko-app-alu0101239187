@@ -3,6 +3,11 @@ import chalk from "chalk";
 import { hideBin } from "yargs/helpers";
 import { spawn } from "child_process";
 
+/**
+ * Executes the program with yargs. The commands are:
+ *  - `pipe`: Executes wc with the selected options using a pipe
+ *  - `no-pipe`: Executes wc with the selected options without using a pipe
+ */
 yargs(hideBin(process.argv))
   .command(
     "pipe",
@@ -65,6 +70,9 @@ yargs(hideBin(process.argv))
       let wc_output = "";
       wc.stdout.on("data", (piece) => (wc_output += piece));
 
+      /**
+       * When wc emits a close event shows the result in the console
+       */
       wc.on("close", (error) => {
         if (error) {
           console.log(
@@ -100,4 +108,5 @@ yargs(hideBin(process.argv))
       });
     }
   )
-  .strict(true).argv;
+  .strict(true)
+  .help().argv;
