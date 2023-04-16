@@ -4,11 +4,11 @@
 
 ### alu0101239187@ull.edu.es
 
-[![tests]
+[![tests](https://github.com/ULL-ESIT-INF-DSI-2223/ull-esit-inf-dsi-22-23-prct10-fs-proc-sockets-funko-app-alu0101239187/actions/workflows/node.js.yml/badge.svg)](https://github.com/ULL-ESIT-INF-DSI-2223/ull-esit-inf-dsi-22-23-prct10-fs-proc-sockets-funko-app-alu0101239187/actions/workflows/node.js.yml)
 
-[![coveralls]
+[![coveralls](https://github.com/ULL-ESIT-INF-DSI-2223/ull-esit-inf-dsi-22-23-prct10-fs-proc-sockets-funko-app-alu0101239187/actions/workflows/coveralls.yml/badge.svg)](https://github.com/ULL-ESIT-INF-DSI-2223/ull-esit-inf-dsi-22-23-prct10-fs-proc-sockets-funko-app-alu0101239187/actions/workflows/coveralls.yml)
 
-[![Quality Gate Status]
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ULL-ESIT-INF-DSI-2223_ull-esit-inf-dsi-22-23-prct10-fs-proc-sockets-funko-app-alu0101239187&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ULL-ESIT-INF-DSI-2223_ull-esit-inf-dsi-22-23-prct10-fs-proc-sockets-funko-app-alu0101239187)
 
 ## Índice
 
@@ -155,6 +155,8 @@ El cliente recoge de la la terminal el comando a ejecutar y los argumentos a uti
 Una vez enviado el mensaje y respondido por parte del servidor, el cliente procesa la respuesta gracias al listener del evento *message*, que muestra por consola al usuario el resultado de la operación.
 
 ## Conclusión
+
+En esta práctica hemos tratado el uso un gran número de funcionalidades proporcionadas por el entorno asíncrono de Node, como el uso de sockets, ejecución de comandos y gestión de ficheros manera asíncrona. De esta manera, comenzamos a introducir una nueva manera de programar que introduce bastantes cambios respecto a la programación síncrona a la que estamos acostumbrados.
 
 ## Bibliografía
 
