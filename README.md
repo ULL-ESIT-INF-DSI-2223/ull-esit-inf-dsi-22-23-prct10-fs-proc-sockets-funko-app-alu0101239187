@@ -126,6 +126,34 @@ El funcionamiento del cliente es muy sencillo gracias al paquete `yargs`, que se
 
 Una vez enviado el mensaje y respondido por parte del servidor, el cliente procesa la respuesta gracias al listener del evento *message* que tratamos previamente, que muestra por consola al usuario el resultado de la operación.
 
+### Ejercicio PE 103
+
+El ejercicio de la sesión de prácticas trata del desarrollo de una conexión cliente-servidor en la que el cliente envía un comando al servidor, este lo ejecuta y envía su resultado al cliente.
+
+#### Servidor
+
+El lado servidor se encarga de ejecutar el comando recibido. Para esto, con cada conexión, el servidor inicia listeners para varios eventos:
+
+- *data*: Cuando llega información en la conexión la añade a una cadena. Cuando encuentra un salto de línea, interpreta que la información está completa y emite un evento *request* junto a la información obtenida en formato JSON.
+- *request*: Cuando el servidor detecta este evento, forma el comando a ejecutar con la información obtenida del cliente y lo ejecuta. En caso de error se lo comunica al cliente y si el comando se logra ejecutar se le envía la información resultado de la ejecución al cliente.
+- *close*: Informa de que un cliente se ha desconectado.
+
+Las respuestas del servidor son del tipo `ResponseType`, cuyos atributos son los siguientes:
+
+- `success`: Verdadero si el comando se ejecutó con éxito, falso en caso contrario.
+- `result`: Atributo opcional con el resultado de la ejecución.
+
+#### Cliente
+
+El lado cliente del programa se encarga de la interacción con el usuario. Este funciona, al igual que el cliente del ejercicio anterior, gracias a la clase  `MessageEventEmitterClient` explicada anteriormente. 
+
+El cliente recoge de la la terminal el comando a ejecutar y los argumentos a utilizar y se los envía al servidor en un mensaje del tipo `RequestType`, que posee los siguientes atributos:
+
+- `command`: Comando a ejecutar.
+- `args`: Argumentos para ejecutar el comando.
+
+Una vez enviado el mensaje y respondido por parte del servidor, el cliente procesa la respuesta gracias al listener del evento *message*, que muestra por consola al usuario el resultado de la operación.
+
 ## Conclusión
 
 ## Bibliografía
