@@ -72,7 +72,7 @@ if (process.argv.length !== 3) {
 
 El programa vigila los cambios que se realicen en un fichero. Para esto, lo primero que hace, después de comprobar que el número de argumentos es el correcto, es comprobar que elfichero existe. Esto se puede lograr gracias al método `access` de `fs`, que permite comprobar permisos indicándole la ruta de un fichero, el permiso a comprobar y un callback a ejecutarse tras la comprobación. Para indicar que permisos se van a comprobar se utiliza el espacio de nombres `constants`, que incluye todas las constantes de las que hacen uso los métodos y clases de `fs` como opciones. En este caso, se utiliza la constante `F_OK`, que no hace que se comprueben permisos, si no la visibilidad del fichero. 
 
-Tras comprobar que el fichero es visible, muestra un mensaje por pantalla indicando que se comienza a vigilar el fichero y ejecuta la función `watch` para ello. Tras esto, muestra el mensaje1 \`File ${filename} is no longer watched\` por consola, dado que es código síncrono. Sin embargo, `watcher` se sigue ejecutando y se ha establecido un listener que se ejecutará cada vez que se genere un evento de tipo *change*, lo que en este contexto será cada vez que haya un cambio en el fichero.
+Tras comprobar que el fichero es visible, muestra un mensaje por pantalla indicando que se comienza a vigilar el fichero y ejecuta la función `watch` para ello. Tras esto, muestra el mensaje \`File $\{filename\} is no longer watched\` por consola, dado que es código síncrono. Sin embargo, `watcher` se sigue ejecutando y se ha establecido un listener que se ejecutará cada vez que se genere un evento de tipo *change*, lo que en este contexto será cada vez que haya un cambio en el fichero.
 
 #### Traza del programa
 
